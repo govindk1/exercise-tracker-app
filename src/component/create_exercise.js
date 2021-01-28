@@ -6,7 +6,7 @@ import axios from  "axios"
 function  CreateExercise() {
    
     
-
+    
 
     
     const [k1, setk1] = useState({hits:[]});
@@ -50,7 +50,7 @@ function  CreateExercise() {
         axios.post('http://localhost:5000/exercises/add', exercise)
       .then(res => console.log(res.data));
 
-    
+    window.location = '/'
     }
     return (
         <div>
