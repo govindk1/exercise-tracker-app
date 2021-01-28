@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
+import {Link} from "react-router-dom"
+
 var moment = require('moment');
 
 const ExercisesList = () => {
@@ -19,6 +21,17 @@ const ExercisesList = () => {
        all_exercises()
         
     }, [])
+
+    const deleteExercise = (id) => {
+        
+        axios.delete('http://localhost:5000/exercises/'+id)
+        .then(response => { console.log(response.data)});
+
+        setk1({
+            hits: k1.hits.filter(exercise => exercise._id !== id)
+        })
+
+    }
 
     
     return (
@@ -43,13 +56,16 @@ const ExercisesList = () => {
                 
 
                 return(
-                    <tr key={k1.id}>
-                    <td key={k1.id}>{exercise.username}</td>
-                    <td key={k1.id}>{exercise.description}</td>
-                    <td key={k1.id}>{exercise.duration}</td>
-                    <td key={k1.id}>{moment(exercise.date).utc().format('MM/DD/YYYY')}</td>
-                    
-                </tr>
+                    <tr key={exercise._id}>
+
+                        <td>{exercise.username}</td>
+                        <td>{exercise.description}</td>
+                        <td>{exercise.duration}</td>
+                        <td>{moment(exercise.date).utc().format('MM/DD/YYYY')}</td>
+                        <td>
+                        <Link to={"/edit/"+exercise._id}>edit</Link> |<a href="#" onClick={() => {deleteExercise(exercise._id)}}>delete</a>
+                        </td>
+                    </tr>
                 )}
             )
           }
