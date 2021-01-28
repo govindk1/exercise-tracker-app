@@ -1,20 +1,22 @@
-import React,{useState, useEffect, useRef} from 'react'
+import React,{useState, useEffect} from 'react'
 import axios from  "axios"
 
 
 
 function  CreateExercise() {
    
+    
+
+
+    
+    const [k1, setk1] = useState({hits:[]});
+
     const [createExercise, setcreateExcercise] = useState({
         username:'',
         description: '',
         duration: '',
         date:''
     })
-
-
-    
-    const [k1, setk1] = useState({hits:[]});
 
     
     
@@ -24,7 +26,10 @@ function  CreateExercise() {
             const response = await axios.get('http://localhost:5000/users/')
 
             setk1({hits:[...response.data, ...k1.hits]})
-           console.log(k1)
+
+            //so let suppose user without changing username it make post request and by default our username is undefined so it will throw error to avoid that we will initialize our username
+            setcreateExcercise({...createExercise, username:response.data[0].username})
+            console.log(k1)
         }
 
        all_users()
@@ -34,18 +39,18 @@ function  CreateExercise() {
 
     const formsubmit = (e) => {
         e.preventDefault();
-
+        
         const exercise = {
             username: createExercise.username,
             description: createExercise.description,
             duration: createExercise.duration,
             date: createExercise.date
           }
-        
+        console.log(exercise)
         axios.post('http://localhost:5000/exercises/add', exercise)
       .then(res => console.log(res.data));
 
-    window.location = '/';
+    
     }
     return (
         <div>
@@ -55,15 +60,22 @@ function  CreateExercise() {
           <label>Username: </label>
           <select 
           required
-          className="form-control">
+          className="form-control"
+          value={createExercise.username}
+          onChange={e => setcreateExcercise({...createExercise, username:e.target.value})}>
           
           {!k1.hits}{
             
+            
+
             k1.hits.map(function(user) {
-              return <option 
+                
+              return(
+                <option 
                 key={user.username}
                 value={user.username}>{user.username}
-                </option>;
+                </option>
+                )
             })
         
           }
