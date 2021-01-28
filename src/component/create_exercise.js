@@ -1,16 +1,8 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, useRef} from 'react'
 import axios from  "axios"
 
-var k = []
-async function all_users(){
-    const response = await axios.get('http://localhost:5000/users/')
-   
-    response.data.map((user) => {
-        k.push(user.username)
-    })
-}
 
- all_users()
+
 function  CreateExercise() {
    
     const [createExercise, setcreateExcercise] = useState({
@@ -19,14 +11,25 @@ function  CreateExercise() {
         duration: '',
         date:''
     })
-    
-    // const [k1, setk1] = useState([]);
-    
-    // useEffect(() => {
 
-    //     setk1([...k])
+
+    
+    const [k1, setk1] = useState({hits:[]});
+
+    
+    
+    useEffect(() => {
+
+        async function all_users(){
+            const response = await axios.get('http://localhost:5000/users/')
+
+            setk1({hits:[...response.data, ...k1.hits]})
+           console.log(k1)
+        }
+
+       all_users()
         
-    // }, [k1])
+    }, [])
   
 
     const formsubmit = (e) => {
@@ -51,20 +54,20 @@ function  CreateExercise() {
         <div className="form-group"> 
           <label>Username: </label>
           <select 
-              required
-              className="form-control"
-              onChange={(e) => setcreateExcercise({...createExercise,username:e.target.value})}
-              
-              >
-              {
-                k.map(function(user) {
-                  return (<option 
-                    key={user}
-                    value={user}>{user}
-                    </option>)
-                })
-              }
-          </select>
+          required
+          className="form-control">
+          
+          {!k1.hits}{
+            
+            k1.hits.map(function(user) {
+              return <option 
+                key={user.username}
+                value={user.username}>{user.username}
+                </option>;
+            })
+        
+          }
+      </select>
         </div>
         <div className="form-group"> 
           <label>Description: </label>
